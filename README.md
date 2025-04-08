@@ -8,7 +8,7 @@ __**Project Information Overview:**__
 - Apache Maven
 - SQL Server Management Studio (SSMS)
 - Git
-**Spring Boot version**: `3.4.4`
+- **Spring Boot version**: `3.4.4`
   
 **Language**: `Java`
 
