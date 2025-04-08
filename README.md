@@ -33,6 +33,6 @@ __**Project Information Overview:**__
   - Validation (For validating user input in DTOs/Entities)
 
 ---
-** PROJECT PROGRESS** *Last Updated: 4/8/2025 11:58PM*
+**PROJECT PROGRESS** *last updated: 4/8/2025 11:58PM*
 * `Phase 1: Project Initialization and Environment Setup`
 * `Phase 2: Database Setup`
