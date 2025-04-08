@@ -8,7 +8,8 @@ __**Project Information Overview:**__
 - Apache Maven
 - SQL Server Management Studio (SSMS)
 - Git
-- **Spring Boot version**: `3.4.4`
+
+**Spring Boot version**: `3.4.4`
   
 **Language**: `Java`
 
@@ -30,7 +31,8 @@ __**Project Information Overview:**__
   - Spring Boot DevTools (For auto-restarts during development)
   - Spring Configuration Processor (Helps with application properties)
   - Validation (For validating user input in DTOs/Entities)
-===
+
+---
 ** PROJECT PROGRESS** *Last Updated: 4/8/2025 11:58PM*
 * `Phase 1: Project Initialization and Environment Setup`
 * `Phase 2: Database Setup`
