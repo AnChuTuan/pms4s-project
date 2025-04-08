@@ -9,11 +9,17 @@ __**Project Information Overview:**__
 - SQL Server Management Studio (SSMS)
 - Git
 **Spring Boot version**: `3.4.4`
+  
 **Language**: `Java`
+
 **Group Id**: `com.pms4st.pms`
+
 **Artifact Id**: `project-management-system-for-student-teams`
+
 **Packaging**: `Jar`
+
 **Java version**: `17.0.2`
+
 **Dependencies**:
   - Spring Web (for web server and MVC features)
   - Spring Data JPA (for database persistence)
