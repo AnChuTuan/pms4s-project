@@ -1,76 +1,43 @@
 package com.pms4st.pms.entity;
 
-import java.util.HashSet;
+import jakarta.persistence.*; // For annotations like @Entity, @Id, etc.
+import lombok.Data; // Lombok: Less code for getters/setters/etc.
+import lombok.NoArgsConstructor; // Lombok: Creates empty constructor
+
+import java.util.HashSet; // Used for collections of related items
 import java.util.Set;
 
-
+@Entity // Tells JPA this class represents a table
+@Table(name = "users") // Links to the "users" table in the DB
+@Data // Lombok adds getters, setters, toString, etc. automatically
+@NoArgsConstructor // Lombok adds a constructor with no arguments
 public class User {
 
+    @Id // Marks this field as the Primary Key
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Tells DB to auto-generate the ID
     private Long id;
+
+    @Column(nullable = false, unique = true) // Maps to a column, cannot be null, must be unique
     private String username;
-    private String password;
+
+    @Column(nullable = false) // Password column, cannot be null
+    private String password; // IMPORTANT: We will store a HASHED password here, not plain text!
+
+    @Column(nullable = false, unique = true)
     private String email;
-    private String fullName;
 
-    private boolean enabled = true;
-    private Set<Role> roles = new HashSet<>();
+    private String fullName; // Maps to full_name column, nullable by default
 
-    public User() {}
+    @Column(nullable = false)
+    private boolean enabled = true; // For Spring Security login status
 
-    public User(Long id, String username, String password, String email, String fullName) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.fullName = fullName;
-    }
-
-    // Getter & Setter
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
-
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
-
-    public boolean isEnabled() { return enabled; }
-    public void setEnabled(boolean enabled) { this.enabled = enabled; }
-
-    public Set<Role> getRoles() { return roles; }
-    public void setRoles(Set<Role> roles) { this.roles = roles; }
-
-    public void addRole(Role role) { this.roles.add(role); }
-    public void removeRole(Role role) { this.roles.remove(role); }
-
-    public boolean hasRole(Role role) {
-        return this.roles.contains(role);
-    }
-
-    public boolean hasRole(String roleName) {
-        for (Role role : this.roles) {
-            if (role.getName().equals(roleName)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public String toString() {
-        return "User{" +
-            "id=" + id +
-            ", username='" + username + '\'' +
-            ", email='" + email + '\'' +
-            ", fullName='" + fullName + '\'' +
-            ", enabled=" + enabled +
-            ", roles=" + roles +
-            '}';
-    }
+    // Relationship: A User can have many Roles (e.g., ROLE_USER, ROLE_ADMIN)
+    // FetchType.EAGER means load the roles immediately when loading a User.
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable( // Defines the link table used for Many-to-Many
+            name = "user_roles", // Name of the link table in the DB
+            joinColumns = @JoinColumn(name = "user_id"), // Foreign key in link table pointing back to User
+            inverseJoinColumns = @JoinColumn(name = "role_id") // Foreign key in link table pointing to Role
+    )
+    private Set<Role> roles = new HashSet<>(); // A user can have a set of roles
 }
