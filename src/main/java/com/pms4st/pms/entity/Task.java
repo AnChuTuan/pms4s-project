@@ -1,64 +1,35 @@
 package com.pms4st.pms.entity;
-
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Entity
-@Table(name = "tasks")
-@Data
-@NoArgsConstructor
-@EqualsAndHashCode(exclude = {"project", "assignee", "createdBy"}) // Avoid loops
-@ToString(exclude = {"project", "assignee", "createdBy"}) // Avoid loops
+@Entity @Table(name = "tasks")
 public class Task {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    // Relationship: Many tasks belong to one Project
-    @ManyToOne(fetch = FetchType.LAZY, optional = false) // Task *must* have a project
-    @JoinColumn(name = "project_id", nullable = false)
-    private Project project;
-
-    @Column(nullable = false, length = 200)
-    private String name;
-
-    @Lob
-    @Column(columnDefinition = "TEXT")
-    private String description;
-
-    @Column(nullable = false, length = 20)
-    private String status = "TODO"; // Default value
-
-    @Column(nullable = false, length = 20)
-    private String priority = "MEDIUM"; // Default value
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate deadline;
-
-    // Relationship: Many tasks can be assigned to one User (or null)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assignee_id") // Nullable is default for ManyToOne
-    private User assignee;
-
-    // Relationship: Many tasks created by one User
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by_id", nullable = false)
-    private User createdBy;
-
-    // Relationship: One task can have many comments
-    // Cascade REMOVE: If task deleted, delete its comments
-    @OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Comment> comments = new HashSet<>();
-
-    // Relationship: One task can have many attachments
-    @OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<FileAttachment> attachments = new HashSet<>();
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false) @JoinColumn(name = "project_id", nullable = false) private Project project;
+    @Column(nullable = false, length = 200) private String name;
+    @Lob @Column(columnDefinition = "TEXT") private String description;
+    @Column(nullable = false, length = 20) private String status = "TODO";
+    @Column(nullable = false, length = 20) private String priority = "MEDIUM";
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) private LocalDate deadline;
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "assignee_id") private User assignee;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false) @JoinColumn(name = "created_by_id", nullable = false) private User createdBy;
+    @OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY) private Set<Comment> comments = new HashSet<>();
+    // --- Basic Getters/Setters/Constructors ---
+    public Task() {}
+    public Long getId() {return id;} public void setId(Long id) {this.id = id;}
+    public Project getProject() {return project;} public void setProject(Project p) {this.project = p;}
+    public String getName() {return name;} public void setName(String n) {this.name = n;}
+    public String getDescription() {return description;} public void setDescription(String d) {this.description = d;}
+    public String getStatus() {return status;} public void setStatus(String s) {this.status = s;}
+    public String getPriority() {return priority;} public void setPriority(String p) {this.priority = p;}
+    public LocalDate getDeadline() {return deadline;} public void setDeadline(LocalDate d) {this.deadline = d;}
+    public User getAssignee() {return assignee;} public void setAssignee(User a) {this.assignee = a;}
+    public User getCreatedBy() {return createdBy;} public void setCreatedBy(User cb) {this.createdBy = cb;}
+    public Set<Comment> getComments() { return comments; } public void setComments(Set<Comment> c) { this.comments = c; }
+    @Override public boolean equals(Object o) { if (o == this) return true; if (!(o instanceof Task t)) return false; return id != null && id.equals(t.id); }
+    @Override public int hashCode() { return Objects.hash(id); }
 }

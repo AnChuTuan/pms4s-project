@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>Access Denied</title>
+</head>
+<body>
+    <main>
+         <div class="container mt-5 text-center">
+             <div class="alert alert-warning" role="alert">
+                 <h4 class="alert-heading">Access Denied</h4>
+                <p th:text="${errorMessage} ?: 'Sorry, you do not have permission to access the requested page or perform the requested action.'">Permission details.</p>
+                 <hr>
+                <p class="mb-0">If you believe this is an error, please contact the administrator or return to the <a th:href="@{/projects}" class="alert-link">Projects Page</a>.</p>
+             </div>
+        </div>
+    </main>
+</body>
+</html>

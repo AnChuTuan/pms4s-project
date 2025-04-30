@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: layout(pageTitle=~{::title}, pageContent=~{::main})}">
+<head>
+    <!-- JUST the title content to be passed -->
+    <title>Register - Student Team PMS</title>
+</head>
+<body>
+    <!-- This main content block is passed to the layout -->
+    <main>
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6 col-lg-5">
+                <div class="card shadow">
+                     <div class="card-header text-center"><h3>Register New Account</h3></div>
+                    <div class="card-body">
+                         <div th:if="${registrationError}" class="alert alert-danger small p-2" role="alert">
+                             <span th:text="${registrationError}">Error!</span>
+                         </div>
+                        <!-- Bind directly to 'user' object -->
+                        <form th:action="@{/register}" th:object="${user}" method="post" class="needs-validation" novalidate>
+                            <!-- Username -->
+                            <div class="mb-3">
+                                <label for="username" class="form-label required">Username</label>
+                                <input type="text" id="username" th:field="*{username}" class="form-control" th:errorclass="is-invalid" required>
+                                <div class="invalid-feedback" th:if="${usernameError}" th:text="${usernameError}"></div>
+                                <div class="invalid-feedback" th:unless="${usernameError}" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+                            </div>
+                            <!-- Email -->
+                            <div class="mb-3">
+                                <label for="email" class="form-label required">Email</label>
+                                <input type="email" id="email" th:field="*{email}" class="form-control" th:errorclass="is-invalid" required>
+                                 <div class="invalid-feedback" th:if="${emailError}" th:text="${emailError}"></div>
+                                 <div class="invalid-feedback" th:unless="${emailError}" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                            </div>
+                            <!-- Password -->
+                            <div class="mb-3">
+                                <label for="password" class="form-label required">Password</label>
+                                <input type="password" id="password" th:field="*{password}" class="form-control" th:errorclass="is-invalid" required aria-describedby="passwordHelp">
+                                 <div class="invalid-feedback" th:if="${passwordError}" th:text="${passwordError}"></div>
+                                 <div class="invalid-feedback" th:unless="${passwordError}" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                                <div id="passwordHelp" class="form-text">Must be at least 6 characters long.</div>
+                            </div>
+                            <!-- Full Name (Optional) -->
+                            <div class="mb-3">
+                                <label for="fullName" class="form-label">Full Name</label>
+                                <input type="text" id="fullName" th:field="*{fullName}" class="form-control">
+                            </div>
+                            <div class="d-grid"><button type="submit" class="btn btn-success">Register</button></div>
+                        </form>
+                        <hr>
+                         <div class="text-center">Already have an account? <a th:href="@{/login}">Login here</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+     <!-- Optional page specific scripts -->
+     <th:block th:fragment="scripts"></th:block>
+</body>
+</html>

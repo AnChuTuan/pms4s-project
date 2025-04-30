@@ -1,43 +1,29 @@
 package com.pms4st.pms.entity;
-
-import jakarta.persistence.*; // For annotations like @Entity, @Id, etc.
-import lombok.Data; // Lombok: Less code for getters/setters/etc.
-import lombok.NoArgsConstructor; // Lombok: Creates empty constructor
-
-import java.util.HashSet; // Used for collections of related items
+import jakarta.persistence.*;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Entity // Tells JPA this class represents a table
-@Table(name = "users") // Links to the "users" table in the DB
-@Data // Lombok adds getters, setters, toString, etc. automatically
-@NoArgsConstructor // Lombok adds a constructor with no arguments
+@Entity @Table(name = "users")
 public class User {
-
-    @Id // Marks this field as the Primary Key
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Tells DB to auto-generate the ID
-    private Long id;
-
-    @Column(nullable = false, unique = true) // Maps to a column, cannot be null, must be unique
-    private String username;
-
-    @Column(nullable = false) // Password column, cannot be null
-    private String password; // IMPORTANT: We will store a HASHED password here, not plain text!
-
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    private String fullName; // Maps to full_name column, nullable by default
-
-    @Column(nullable = false)
-    private boolean enabled = true; // For Spring Security login status
-
-    // Relationship: A User can have many Roles (e.g., ROLE_USER, ROLE_ADMIN)
-    // FetchType.EAGER means load the roles immediately when loading a User.
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
+    @Column(nullable = false, unique = true) private String username;
+    @Column(nullable = false) private String password; // HASHED!
+    @Column(nullable = false, unique = true) private String email;
+    private String fullName;
+    @Column(nullable = false) private boolean enabled = true;
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable( // Defines the link table used for Many-to-Many
-            name = "user_roles", // Name of the link table in the DB
-            joinColumns = @JoinColumn(name = "user_id"), // Foreign key in link table pointing back to User
-            inverseJoinColumns = @JoinColumn(name = "role_id") // Foreign key in link table pointing to Role
-    )
-    private Set<Role> roles = new HashSet<>(); // A user can have a set of roles
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+    // --- Basic Getters/Setters/Constructors ---
+    public User() {}
+    public Long getId() {return id;} public void setId(Long id) {this.id = id;}
+    public String getUsername() {return username;} public void setUsername(String u) {this.username = u;}
+    public String getPassword() {return password;} public void setPassword(String p) {this.password = p;}
+    public String getEmail() {return email;} public void setEmail(String e) {this.email = e;}
+    public String getFullName() {return fullName;} public void setFullName(String fn) {this.fullName = fn;}
+    public boolean isEnabled() {return enabled;} public void setEnabled(boolean e) {this.enabled = e;}
+    public Set<Role> getRoles() {return roles;} public void setRoles(Set<Role> r) {this.roles = r;}
+    @Override public boolean equals(Object o) { if (o == this) return true; if (!(o instanceof User u)) return false; return id != null && id.equals(u.id); }
+    @Override public int hashCode() { return Objects.hash(id); }
 }

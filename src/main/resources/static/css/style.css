@@ -1,0 +1,11 @@
+body {
+    padding-top: 4.5rem; /* Adjust for fixed navbar */
+    padding-bottom: 3rem;
+  }
+  label.required::after { /* Style required labels */
+      content: " *";
+      color: red;
+  }
+  .tab-content { /* Add space below tabs */
+      padding-top: 1rem;
+  }

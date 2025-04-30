@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: layout(pageTitle=~{::title}, pageContent=~{::main}, pageScripts=~{::scripts})}">
+
+<head>
+    <!-- JUST the title content to be passed -->
+    <title th:text="${project.id == null} ? 'Create Project' : 'Edit Project'">Project Form</title>
+</head>
+
+<body>
+    <!-- This main block is selected by ~{::main} and passed to layout -->
+    <main>
+        <h1 th:text="${project.id == null} ? 'Create New Project' : 'Edit Project: ' + ${project.name}">Form Title</h1>
+        <hr>
+
+        <!-- Display general error message if any (Handled by layout now) -->
+        <!-- <div th:if="${errorMessage}" ...></div> -->
+
+        <!-- Form submits to /projects/save -->
+        <!-- th:object binds the form to the 'project' model attribute -->
+        <form th:action="@{/projects/save}" th:object="${project}" method="post" class="needs-validation" novalidate>
+            <!-- Hidden input for project ID (important for updates) -->
+            <input type="hidden" th:field="*{id}" />
+
+            <!-- Project Name -->
+            <div class="mb-3">
+                <label for="projectName" class="form-label required">Project Name</label>
+                <!-- th:field connects input to project.name, handles value, id, name -->
+                <input type="text" id="projectName" th:field="*{name}" class="form-control" th:errorclass="is-invalid" required maxlength="100">
+                <!-- Display validation errors for 'name' field -->
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</div>
+                <!-- Basic HTML5 msg for client-side -->
+                <div class="invalid-feedback">Project name is required.</div>
+            </div>
+
+            <!-- Project Description -->
+             <div class="mb-3">
+                <label for="projectDescription" class="form-label">Description</label>
+                <textarea id="projectDescription" th:field="*{description}" rows="4" class="form-control"></textarea>
+            </div>
+
+            <!-- Start and End Dates -->
+             <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="projectStartDate" class="form-label">Start Date</label>
+                    <!-- Input type="date" works with LocalDate -->
+                    <input type="date" id="projectStartDate" th:field="*{startDate}" class="form-control" th:errorclass="is-invalid">
+                    <!-- Server-side errors -->
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}">Date Error</div>
+                </div>
+                 <div class="col-md-6">
+                    <label for="projectEndDate" class="form-label">End Date</label>
+                    <input type="date" id="projectEndDate" th:field="*{endDate}" class="form-control" th:errorclass="is-invalid">
+                     <div class="invalid-feedback" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}">Date Error</div>
+                </div>
+            </div>
+
+            <!-- Display Owner (Readonly on edit) -->
+            <!-- Added null check for owner -->
+             <div class="mb-3" th:if="${project.id != null and project.owner != null}">
+                <label class="form-label">Owner</label>
+                <!-- Corrected input type -->
+                <input type="text" class="form-control" th:value="${project.owner.username}" readonly disabled>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary" th:text="${project.id == null} ? 'Create Project' : 'Save Changes'">Submit</button>
+                <!-- Cancel Button -->
+                <a th:href="${project.id == null} ? @{/projects} : @{/projects/{id}(id=${project.id})}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </main>
+
+     <!-- Define page-specific scripts block -->
+     <th:block th:fragment="scripts">
+        <!-- Simple JS for Bootstrap validation styles -->
+        <script>
+            (function () {
+              'use strict';
+              var forms = document.querySelectorAll('.needs-validation');
+              Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                  if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                  }
+                  form.classList.add('was-validated');
+                }, false);
+              });
+            })();
+        </script>
+     </th:block>
+</body>
+</html>
