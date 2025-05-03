@@ -9,7 +9,7 @@ public class Comment {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
     @Lob @Column(nullable = false, columnDefinition = "TEXT") private String content;
     @CreationTimestamp @Column(nullable = false, updatable = false) private LocalDateTime createdAt;
-    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "user_id") private User user;
+    @ManyToOne(fetch = FetchType.EAGER) @JoinColumn(name = "user_id") private User user;
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "project_id") private Project project;
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "task_id") private Task task;
     // --- Basic Getters/Setters/Constructors ---

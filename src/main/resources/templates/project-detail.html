@@ -3,19 +3,19 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       th:replace="~{fragments/layout :: layout(pageTitle=~{::title}, pageContent=~{::main}, pageScripts=~{::scripts})}">
 <head>
-    <!-- Define this page's title -->
+    <!-- Just the title content -->
     <title th:text="${project?.name ?: 'Project'} + ' - Details'">Project Details</title>
 </head>
 <body>
-    <!-- Define this page's main content -->
+    <!-- Main page content -->
     <main>
-        <!-- Project Header & Edit/Delete Buttons (for Owner) -->
-        <!-- Use safe navigation (?.) in case project is unexpectedly null -->
+        <!-- Project Header -->
         <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
             <h1 th:text="${project?.name}">Project Name</h1>
+            <!-- Edit/Delete Buttons for Owner -->
             <div th:if="${project != null and #authentication.name == project.owner?.username}">
                  <a th:href="@{/projects/{id}/edit(id=${project.id})}" class="btn btn-warning me-2">Edit Project</a>
-                 <form th:action="@{/projects/{id}/delete(id=${project.id})}" method="post" class="d-inline" onsubmit="return confirm('Delete this project?');">
+                 <form th:action="@{/projects/{id}/delete(id=${project.id})}" method="post" class="d-inline" onsubmit="return confirm('Delete this project and ALL related data?');">
                      <button type="submit" class="btn btn-danger">Delete Project</button>
                 </form>
             </div>
@@ -36,8 +36,7 @@
         </div>
         <div th:unless="${project != null}" class="alert alert-warning">Project data not available.</div>
 
-
-         <!-- Tabs for Tasks, Members, Comments -->
+        <!-- Tabs Navigation -->
         <ul class="nav nav-tabs mb-3" id="projectDetailTabs" role="tablist" th:if="${project != null}">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="tasks-tab" data-bs-toggle="tab" data-bs-target="#tasks-panel" type="button">Tasks</button>
@@ -48,35 +47,32 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="comments-tab" data-bs-toggle="tab" data-bs-target="#comments-panel" type="button">Comments</button>
             </li>
-             <!-- REMOVED Files Tab Button -->
+            <!-- Files tab is removed -->
         </ul>
 
-        <!-- Tab Content -->
+        <!-- Tab Content Panes -->
         <div class="tab-content" id="projectDetailTabsContent" th:if="${project != null}">
 
             <!-- Tasks Panel -->
             <div class="tab-pane fade show active" id="tasks-panel" role="tabpanel">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h4>Tasks</h4>
-                    <!-- Link uses project.id, safe navigation not strictly needed if project check passed -->
                     <a th:href="@{/projects/{projectId}/tasks/new(projectId=${project.id})}" class="btn btn-success btn-sm">Add Task</a>
                 </div>
-                <!-- Null check for tasks list -->
-                <div th:if="${tasks == null or tasks.empty}" class="alert alert-light">No tasks yet.</div>
-                <div class="list-group" th:if="${tasks != null}">
-                     <div th:each="task : ${tasks}" class="list-group-item">
+                <div th:if="${tasks == null or tasks.empty}" class="alert alert-light">No tasks assigned to this project yet.</div>
+                <div class="list-group" th:unless="${tasks == null or tasks.empty}"> <!-- Check tasks is not null -->
+                     <div th:each="task : ${tasks}" class="list-group-item list-group-item-action"> <!-- Added action class -->
                         <div class="d-flex w-100 justify-content-between">
                             <h5 class="mb-1" th:text="${task.name}">Task Name</h5>
-                            <small th:text="${task.deadline} ? ${#temporals.format(task.deadline, 'yyyy-MM-dd')} : ''"></small>
+                            <small th:text="${task.deadline} ? ${#temporals.format(task.deadline, 'yyyy-MM-dd')} : ''" class="text-muted"></small>
                         </div>
-                        <p class="mb-1" th:text="${task.description} ?: ''"></p>
+                        <p class="mb-1" th:text="${task.description} ?: ''">Task description.</p>
                         <small>
-                             <span th:text="'Status: '+${task.status}" class="badge bg-primary me-2"></span>
-                             <span th:text="'Priority: '+${task.priority}" class="badge bg-info me-2"></span>
+                             <span th:text="'Status: '+${task.status}" class="badge bg-primary me-1"></span>
+                             <span th:text="'Priority: '+${task.priority}" class="badge bg-info me-1"></span>
                              <span th:text="'Assigned: '+ ${task.assignee?.username ?: 'Unassigned'}" class="badge bg-secondary"></span>
                          </small>
-                         <!-- Task Action Buttons -->
-                         <div class="mt-2">
+                         <div class="mt-2 float-end"> <!-- Buttons on the right -->
                              <a th:href="@{/projects/{projectId}/tasks/{taskId}/edit(projectId=${project.id}, taskId=${task.id})}" class="btn btn-outline-secondary btn-sm">Edit</a>
                               <form th:action="@{/projects/{projectId}/tasks/{taskId}/delete(projectId=${project.id}, taskId=${task.id})}" method="post" class="d-inline" onsubmit="return confirm('Delete this task?');">
                                   <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
@@ -88,18 +84,18 @@
 
             <!-- Members Panel -->
             <div class="tab-pane fade" id="members-panel" role="tabpanel">
-                 <!-- Added null check for projectMembers -->
+                 <!-- Use projectMembers attribute name from controller -->
                  <h4>Members (<span th:text="${projectMembers != null ? #lists.size(projectMembers) : 0}">0</span>)</h4>
-                 <div th:if="${projectMembers == null or projectMembers.empty}" class="text-muted mb-3">No members found (besides owner maybe).</div>
+                 <div th:if="${projectMembers == null or projectMembers.empty}" class="text-muted mb-3">No members found (besides owner).</div>
                  <ul class="list-group mb-3" th:if="${projectMembers != null}">
                      <li th:each="member : ${projectMembers}" class="list-group-item d-flex justify-content-between align-items-center">
                          <span th:text="${member.username}"></span>
-                          <span th:if="${project.owner != null and member.id == project.owner.id}" class="badge bg-warning text-dark">Owner</span>
-                         <!-- Remove Button -->
+                          <span th:if="${project.owner != null and member.id == project.owner.id}" class="badge bg-warning text-dark ms-2">Owner</span> <!-- Added margin -->
+                         <!-- Remove Button Logic -->
                           <form th:if="${#authentication.name == project.owner?.username and project.owner != null and member.id != project.owner.id}"
                                th:action="@{/projects/{id}/members/remove(id=${project.id})}" method="post" class="d-inline">
                               <input type="hidden" name="userId" th:value="${member.id}" />
-                             <button type="submit" class="btn btn-danger btn-sm" title="Remove Member">Remove</button>
+                             <button type="submit" class="btn btn-danger btn-sm py-0 px-1" title="Remove Member">Remove</button> <!-- Made button smaller -->
                          </form>
                      </li>
                  </ul>
@@ -107,51 +103,55 @@
                  <!-- Add Member Form -->
                   <div th:if="${#authentication.name == project.owner?.username}">
                      <h5>Add New Member</h5>
-                     <!-- Added null check for potentialMembers -->
                      <form th:action="@{/projects/{id}/members/add(id=${project.id})}" method="post" class="row g-2" th:if="${potentialMembers != null}">
-                         <div class="col-md-8">
+                         <div class="col-auto flex-grow-1"> <!-- Allow select to grow -->
                              <label for="addMemberSelect" class="visually-hidden">Select User</label>
-                             <select id="addMemberSelect" name="userId" class="form-select" required>
+                             <select id="addMemberSelect" name="userId" class="form-select form-select-sm" required> <!-- Smaller select -->
                                  <option value="" disabled selected>-- Select User --</option>
                                  <option th:each="user : ${potentialMembers}" th:value="${user.id}" th:text="${user.username}">User</option>
                              </select>
-                              <div th:if="${potentialMembers.empty}" class="form-text text-muted small">No other users available to add.</div>
                          </div>
-                         <div class="col-md-4">
-                             <button type="submit" class="btn btn-primary w-100" th:disabled="${potentialMembers == null or potentialMembers.empty}">Add Member</button>
+                         <div class="col-auto">
+                             <button type="submit" class="btn btn-primary btn-sm" th:disabled="${potentialMembers == null or potentialMembers.empty}">Add Member</button>
                          </div>
+                         <div th:if="${potentialMembers != null and potentialMembers.empty}" class="col-12 form-text text-muted small">No other users available to add.</div>
                      </form>
-                     <div th:if="${potentialMembers == null}" class="alert alert-warning small">Could not load potential members.</div>
+                     <div th:if="${potentialMembers == null}" class="alert alert-warning small p-2">Could not load potential members list.</div>
                   </div>
             </div> <!-- End Members Panel -->
 
-             <!-- Comments Panel -->
+            <!-- Comments Panel -->
             <div class="tab-pane fade" id="comments-panel" role="tabpanel">
                 <h4>Project Comments</h4>
-                 <!-- Add Comment Form -->
-                 <form th:action="@{/projects/{id}/comments(id=${project.id})}" method="post" class="mb-4">
+                <!-- Add Comment Form -->
+                <form th:action="@{/projects/{id}/comments(id=${project.id})}" method="post" class="mb-4">
                      <div class="mb-2">
                          <label for="projectCommentContent" class="form-label">Your Comment:</label>
-                         <!-- Use th:field with the newComment object from model -->
-                         <textarea id="projectCommentContent" th:field="${newComment.content}" rows="3" class="form-control" required></textarea>
+                         <!-- Bind to newComment object passed from controller -->
+                         <textarea id="projectCommentContent" th:field="${newComment.content}" rows="3" class="form-control" required placeholder="Enter your comment here..."></textarea>
                      </div>
                      <button type="submit" class="btn btn-info btn-sm">Post Comment</button>
-                 </form>
-                 <!-- Display Comments -->
-                 <!-- Added null check -->
+                </form>
+                <!-- Display Comments -->
                 <div th:if="${projectComments == null or projectComments.empty}" class="text-muted">No project comments yet.</div>
-                 <div th:unless="${projectComments == null or projectComments.empty}">
+                <div th:unless="${projectComments == null or projectComments.empty}">
                     <div th:each="comment : ${projectComments}" class="border rounded p-2 mb-2 bg-light">
-                         <p class="mb-1" th:text="${comment.content}">Comment text.</p>
+                         <p class="mb-1" style="white-space: pre-wrap;" th:text="${comment.content}">Comment text.</p> <!-- Preserve whitespace -->
                          <small class="text-muted">
                             By <strong th:text="${comment.user?.username} ?: 'Deleted User'">User</strong>
-                            on <span th:text="${#temporals.format(comment.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
+                            on <span th:text="${#temporals.format(comment.createdAt, 'dd MMM yyyy, HH:mm')}">Timestamp</span>
                          </small>
+                         <!-- TODO: Add delete comment button if needed -->
+                         <!--
+                         <form th:if="${#authentication.name == comment.user?.username}" ...>
+                             <button>Delete Comment</button>
+                         </form>
+                         -->
                     </div>
-                 </div>
+                </div>
             </div> <!-- End Comments Panel -->
 
-             <!-- REMOVED Files Panel -->
+            <!-- Files Panel Removed -->
 
         </div> <!-- End Tab Content -->
     </main>

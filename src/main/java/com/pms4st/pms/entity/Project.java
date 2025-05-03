@@ -37,7 +37,7 @@ public class Project {
     private Set<User> members = new HashSet<>();
 
     // Keep comments LAZY unless always needed
-    @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Comment> comments = new HashSet<>();
 
     // File Attachments relationship removed as requested previously

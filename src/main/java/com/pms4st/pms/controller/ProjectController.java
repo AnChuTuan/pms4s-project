@@ -1,4 +1,4 @@
-package com.pms4st.pms.controller;
+package com.pms4st.pms.controller; // Ensure this matches your package
 
 import com.pms4st.pms.entity.*;
 import com.pms4st.pms.exception.ResourceNotFoundException;
@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.security.Principal;
 import java.util.List;
 
@@ -36,21 +37,40 @@ public class ProjectController {
         return "project-form";
     }
 
-    @GetMapping("/{projectId}")
+    @GetMapping("/{projectId}") // Renamed path variable for clarity
     public String viewProject(@PathVariable Long projectId, Model model, Principal principal, RedirectAttributes ra) {
-        if(principal==null) return "redirect:/login";
+        if (principal == null) {
+            log.warn("Attempt to view project detail without authentication.");
+            return "redirect:/login";
+        }
+        String username = principal.getName();
         try {
-            Project project = appService.findProjectByIdForUser(projectId, principal.getName()); // Checks access
+            // Get project & verify user access (assumes members are EAGER fetched or initialized in service)
+            Project project = appService.findProjectByIdForUser(projectId, username);
+
+            // Get related data using service methods
+            List<Task> tasks = appService.findTasksByProjectId(projectId);
+            List<Comment> projectComments = appService.findCommentsForProject(projectId); // Get project-specific comments
+            List<User> potentialMembers = appService.findPotentialMembers(projectId);
+
+            // Add attributes to the model for the Thymeleaf template
             model.addAttribute("project", project);
-            model.addAttribute("tasks", appService.findTasksByProjectId(projectId));
-            model.addAttribute("comments", appService.findCommentsForProject(projectId));
-            model.addAttribute("members", project.getMembers());
-            model.addAttribute("potentialMembers", appService.findPotentialMembers(projectId));
-            model.addAttribute("newTask", new Task()); // For add task form
-            model.addAttribute("newComment", new Comment()); // For add comment form
-            return "project-detail";
+            model.addAttribute("tasks", tasks);
+            model.addAttribute("projectComments", projectComments); // Use this name in template
+            model.addAttribute("projectMembers", project.getMembers()); // Directly pass the (now EAGER) members set
+            model.addAttribute("potentialMembers", potentialMembers);
+            model.addAttribute("newComment", new Comment()); // For the comment form
+
+            return "project-detail"; // Render project-detail.html
+
+        } catch (ResourceNotFoundException | AccessDeniedException e) {
+            log.warn("Access denied or project not found for ID {} by user {}: {}", projectId, username, e.getMessage());
+            ra.addFlashAttribute("errorMessage", e.getMessage()); // Pass error message
+            return "redirect:/projects"; // Redirect to project list on error
         } catch (Exception e) {
-            ra.addFlashAttribute("errorMessage", "Could not load project: " + e.getMessage());
+            // Catch unexpected errors
+            log.error("Error viewing project ID {} by user {}: {}", projectId, username, e.getMessage(), e); // Log stack trace
+            ra.addFlashAttribute("errorMessage", "An unexpected error occurred loading project details.");
             return "redirect:/projects";
         }
     }
@@ -99,29 +119,48 @@ public class ProjectController {
     }
 
     // --- Project Member Actions ---
-    @PostMapping("/{projectId}/members/add")
+    @PostMapping("/{projectId}/members/add") // Use consistent path variable name
     public String addMember(@PathVariable Long projectId, @RequestParam Long userId, Principal principal, RedirectAttributes ra) {
          if(principal==null) return "redirect:/login";
-        try { appService.addMemberToProject(projectId, userId, principal.getName()); }
-        catch (Exception e) { ra.addFlashAttribute("errorMessage", "Failed to add member: "+e.getMessage()); }
+        try {
+            appService.addMemberToProject(projectId, userId, principal.getName());
+            ra.addFlashAttribute("successMessage", "Member added.");
+        }
+        catch (Exception e) {
+            log.warn("Error adding member {} to project {}: {}", userId, projectId, e.getMessage());
+            ra.addFlashAttribute("errorMessage", "Failed to add member: "+e.getMessage());
+        }
         return "redirect:/projects/" + projectId;
     }
 
-    @PostMapping("/{projectId}/members/remove")
+    @PostMapping("/{projectId}/members/remove") // Use consistent path variable name
     public String removeMember(@PathVariable Long projectId, @RequestParam Long userId, Principal principal, RedirectAttributes ra) {
          if(principal==null) return "redirect:/login";
-        try { appService.removeMemberFromProject(projectId, userId, principal.getName()); }
-        catch (Exception e) { ra.addFlashAttribute("errorMessage", "Failed to remove member: "+e.getMessage()); }
+        try {
+            appService.removeMemberFromProject(projectId, userId, principal.getName());
+            ra.addFlashAttribute("successMessage", "Member removed.");
+        }
+        catch (Exception e) {
+            log.warn("Error removing member {} from project {}: {}", userId, projectId, e.getMessage());
+            ra.addFlashAttribute("errorMessage", "Failed to remove member: "+e.getMessage());
+        }
         return "redirect:/projects/" + projectId;
     }
 
     // --- Project Comment Actions ---
-    @PostMapping("/{projectId}/comments")
+    @PostMapping("/{projectId}/comments") // Use consistent path variable name
     public String addProjectComment(@PathVariable Long projectId, @RequestParam String content, Principal principal, RedirectAttributes ra) {
         if(principal==null) return "redirect:/login";
-        if(content == null || content.isBlank()){ ra.addFlashAttribute("errorMessage", "Comment empty."); return "redirect:/projects/"+projectId;}
-        try { appService.addComment(content, projectId, null, principal.getName()); } // null taskId
-        catch (Exception e) { ra.addFlashAttribute("errorMessage", "Failed to add comment: "+e.getMessage()); }
+        if(content == null || content.isBlank()){
+             ra.addFlashAttribute("errorMessage", "Comment cannot be empty.");
+             return "redirect:/projects/"+projectId;
+        }
+        try {
+            appService.addComment(content, projectId, null, principal.getName()); // null taskId for project comment
+        } catch (Exception e) {
+             log.warn("Error adding project comment to project {}: {}", projectId, e.getMessage());
+             ra.addFlashAttribute("errorMessage", "Failed to add comment: "+e.getMessage());
+        }
         return "redirect:/projects/" + projectId;
     }
 
