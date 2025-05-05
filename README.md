@@ -1,6 +1,7 @@
 **PMS4S - Project**
 ---
 __**Project Information Overview:**__
+
 **Prerequisites**:
 - Java Development Kit (JDK)
 - Visual Studio Code (VS Code)
@@ -27,10 +28,7 @@ __**Project Information Overview:**__
   - SQL Server Driver (to connect to MS SQL Server)
   - Spring Security (for login and permissions)
   - Thymeleaf (for HTML templates)
-  - Lombok (to reduce boilerplate code)
   - Spring Boot DevTools (For auto-restarts during development)
-  - Spring Configuration Processor (Helps with application properties)
-  - Validation (For validating user input in DTOs/Entities)
 
 ---
 **PROJECT PROGRESS** *last updated: 4/8/2025 11:58PM*
