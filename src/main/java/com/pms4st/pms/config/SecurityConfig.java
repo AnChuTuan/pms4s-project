@@ -7,9 +7,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-// We need a UserDetailsService implementation bean for Spring Security to find user data
 import org.springframework.security.core.userdetails.UserDetailsService;
-import com.pms4st.pms.service.AppUserDetailsService; // Create this simple service
+import com.pms4st.pms.service.AppUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
@@ -22,7 +21,7 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**", "/login", "/register").permitAll()
-                .anyRequest().authenticated() // All others need login
+                .anyRequest().authenticated()
             )
             .formLogin(form -> form
                 .loginPage("/login")

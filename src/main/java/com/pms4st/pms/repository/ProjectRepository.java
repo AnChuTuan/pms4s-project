@@ -9,7 +9,6 @@ import java.util.List;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
-    // Find projects user is member of (including owner)
     @Query("SELECT p FROM Project p JOIN p.members m WHERE m.id = :userId")
     List<Project> findByMemberId(@Param("userId") Long userId);
 }

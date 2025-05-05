@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<!-- Use layout fragment, pass specific title and main content block -->
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{fragments/layout :: layout(pageTitle=~{::title}, pageContent=~{::main})}">
 <head>
     <title>Login - Student Team PMS</title>
 </head>
 <body>
-    <!-- This main block replaces the layout's content fragment -->
     <main>
         <div class="row justify-content-center mt-5">
             <div class="col-md-6 col-lg-4">
@@ -17,13 +15,13 @@
                     <div class="card-body">
                         <!-- Login Error Message -->
                         <div th:if="${param.error}" class="alert alert-danger small p-2" role="alert">
-                            Invalid username or password. <!-- Changed message to be more standard -->
+                            Invalid username or password.
                         </div>
                         <!-- Logout Success Message -->
                         <div th:if="${param.logout}" class="alert alert-success small p-2" role="alert">
                             You have been logged out.
                         </div>
-                         <!-- Registration Success Message (if redirected from register) -->
+                         <!-- Registration Success Message -->
                         <div th:if="${successMessage}" class="alert alert-success small p-2" role="alert" th:text="${successMessage}">
                             Registration successful!
                         </div>
@@ -43,12 +41,12 @@
                             </div>
                         </form> <!-- End of the login form -->
 
-                        <!-- === ADDED REGISTRATION LINK === -->
+                        <!-- === REGISTRATION === -->
                         <hr>
                         <div class="text-center mt-3">
                             <p>Don't have an account? <a th:href="@{/register}">Register here</a></p>
                         </div>
-                        <!-- === END OF ADDED SECTION === -->
+                        <!-- === END OF SECTION === -->
 
                     </div> <!-- End of card-body -->
                 </div> <!-- End of card -->

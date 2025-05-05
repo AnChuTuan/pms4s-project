@@ -4,24 +4,15 @@
       th:replace="~{fragments/layout :: layout(pageTitle=~{::title}, pageContent=~{::main}, pageScripts=~{::scripts})}">
 
 <head>
-    <!-- JUST the title content to be passed -->
     <title th:text="${task.id == null} ? 'Create Task' : 'Edit Task'">Task Form</title>
 </head>
 
 <body>
-    <!-- This main content block is passed to the layout -->
     <main>
         <!-- Dynamic Title -->
-        <!-- Safe navigation (?.) added for project name -->
         <h1 th:text="${task.id == null} ? 'Create New Task for Project: ' + ${task.project?.name ?: '(Unknown Project)'} : 'Edit Task: ' + ${task.name}">Task Form Title</h1>
         <hr>
 
-         <!-- Display general error message if any (Handled by layout) -->
-         <!-- <div th:if="${errorMessage}" ...></div> -->
-
-        <!-- Form submits to TaskController save method -->
-        <!-- Note the action URL includes the projectId from the path variable -->
-        <!-- Added null check for projectId in action -->
         <form th:if="${projectId != null}" th:action="@{/projects/{projectId}/tasks/save(projectId=${projectId})}" th:object="${task}" method="post" class="needs-validation" novalidate>
             <div th:unless="${projectId != null}" class="alert alert-danger">Cannot save task: Project ID is missing.</div>
 
@@ -51,7 +42,6 @@
                 <div class="col-md-4">
                     <label for="taskStatus" class="form-label required">Status</label>
                      <select id="taskStatus" th:field="*{status}" class="form-select" required>
-                        <!-- Removed th:selected as th:field handles it -->
                         <option value="TODO">To Do</option>
                         <option value="IN_PROGRESS">In Progress</option>
                         <option value="DONE">Done</option>
@@ -79,11 +69,8 @@
             <!-- Assignee -->
              <div class="mb-3">
                 <label for="taskAssignee" class="form-label">Assignee</label>
-                 <!-- Bind selection directly to assignee.id -->
-                 <!-- This allows submitting just the ID -->
                  <select id="taskAssignee" th:field="*{assignee}" class="form-select" th:errorclass="is-invalid">
                      <option value="">-- Unassigned --</option>
-                     <!-- Check if members list is not null before iterating -->
                      <th:block th:if="${members != null}">
                          <option th:each="member : ${members}"
                                 th:value="${member.id}"
@@ -96,8 +83,7 @@
                  <div class="invalid-feedback" th:if="${#fields.hasErrors('assignee')}" th:errors="*{assignee}">Assignee Error</div>
              </div>
 
-             <!-- Display Creator (Readonly on edit) -->
-             <!-- Added null check for createdBy -->
+             <!-- Display Creator -->
              <div class="mb-3" th:if="${task.id != null and task.createdBy != null}">
                 <label class="form-label">Created By</label>
                 <input type="text" class="form-control" th:value="${task.createdBy.username}" readonly disabled>

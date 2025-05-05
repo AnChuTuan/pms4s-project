@@ -3,7 +3,6 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       th:replace="~{fragments/layout :: layout(pageTitle=~{::title}, pageContent=~{::main}, pageScripts=~{::scripts})}">
 <head>
-    <!-- Just the title content -->
     <title th:text="${project?.name ?: 'Project'} + ' - Details'">Project Details</title>
 </head>
 <body>
@@ -47,7 +46,6 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="comments-tab" data-bs-toggle="tab" data-bs-target="#comments-panel" type="button">Comments</button>
             </li>
-            <!-- Files tab is removed -->
         </ul>
 
         <!-- Tab Content Panes -->
@@ -60,8 +58,8 @@
                     <a th:href="@{/projects/{projectId}/tasks/new(projectId=${project.id})}" class="btn btn-success btn-sm">Add Task</a>
                 </div>
                 <div th:if="${tasks == null or tasks.empty}" class="alert alert-light">No tasks assigned to this project yet.</div>
-                <div class="list-group" th:unless="${tasks == null or tasks.empty}"> <!-- Check tasks is not null -->
-                     <div th:each="task : ${tasks}" class="list-group-item list-group-item-action"> <!-- Added action class -->
+                <div class="list-group" th:unless="${tasks == null or tasks.empty}"> 
+                     <div th:each="task : ${tasks}" class="list-group-item list-group-item-action"> 
                         <div class="d-flex w-100 justify-content-between">
                             <h5 class="mb-1" th:text="${task.name}">Task Name</h5>
                             <small th:text="${task.deadline} ? ${#temporals.format(task.deadline, 'yyyy-MM-dd')} : ''" class="text-muted"></small>
@@ -141,12 +139,7 @@
                             By <strong th:text="${comment.user?.username} ?: 'Deleted User'">User</strong>
                             on <span th:text="${#temporals.format(comment.createdAt, 'dd MMM yyyy, HH:mm')}">Timestamp</span>
                          </small>
-                         <!-- TODO: Add delete comment button if needed -->
-                         <!--
-                         <form th:if="${#authentication.name == comment.user?.username}" ...>
-                             <button>Delete Comment</button>
-                         </form>
-                         -->
+
                     </div>
                 </div>
             </div> <!-- End Comments Panel -->
@@ -156,7 +149,6 @@
         </div> <!-- End Tab Content -->
     </main>
 
-    <!-- Define page-specific scripts block (can be empty) -->
     <th:block th:fragment="scripts"></th:block>
 </body>
 </html>

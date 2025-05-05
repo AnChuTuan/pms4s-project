@@ -1,7 +1,7 @@
 package com.pms4st.pms.controller;
 
 import com.pms4st.pms.entity.User;
-import com.pms4st.pms.service.AppService; // Use combined service
+import com.pms4st.pms.service.AppService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +19,7 @@ public class AuthController {
     @GetMapping("/login") public String showLoginPage() { return "login"; }
 
     @GetMapping("/register") public String showRegistrationForm(Model model) {
-        model.addAttribute("user", new User()); // Use User entity for form
+        model.addAttribute("user", new User());
         return "register";
     }
 
@@ -33,10 +33,9 @@ public class AuthController {
         } else if (appService.findUserByUsername(user.getUsername()).isPresent()) {
              model.addAttribute("usernameError", "Username already taken."); hasErrors = true;
         }
-        // Add similar basic checks for email (format, existence) and password length
 
         if (hasErrors) {
-            return "register"; // Show form again with inline errors (need to add in template)
+            return "register"; 
         }
 
         try {

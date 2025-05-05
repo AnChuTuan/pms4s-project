@@ -4,23 +4,16 @@
       th:replace="~{fragments/layout :: layout(pageTitle=~{::title}, pageContent=~{::main}, pageScripts=~{::scripts})}">
 
 <head>
-    <!-- JUST the title content to be passed -->
     <title th:text="${project.id == null} ? 'Create Project' : 'Edit Project'">Project Form</title>
 </head>
 
 <body>
-    <!-- This main block is selected by ~{::main} and passed to layout -->
     <main>
         <h1 th:text="${project.id == null} ? 'Create New Project' : 'Edit Project: ' + ${project.name}">Form Title</h1>
         <hr>
 
-        <!-- Display general error message if any (Handled by layout now) -->
-        <!-- <div th:if="${errorMessage}" ...></div> -->
 
-        <!-- Form submits to /projects/save -->
-        <!-- th:object binds the form to the 'project' model attribute -->
         <form th:action="@{/projects/save}" th:object="${project}" method="post" class="needs-validation" novalidate>
-            <!-- Hidden input for project ID (important for updates) -->
             <input type="hidden" th:field="*{id}" />
 
             <!-- Project Name -->

@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Collectors;
 
-@Service // Must be a Spring bean
+@Service 
 public class AppUserDetailsService implements UserDetailsService {
 
     @Autowired private UserRepository userRepository;
@@ -31,7 +31,7 @@ public class AppUserDetailsService implements UserDetailsService {
         // Return Spring Security UserDetails object
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(), user.getPassword(), user.isEnabled(),
-                true, true, true, // account non-expired, credentials non-expired, non-locked
+                true, true, true, 
                 authorities);
     }
 }

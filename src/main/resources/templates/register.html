@@ -41,7 +41,7 @@
                                  <div class="invalid-feedback" th:unless="${passwordError}" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
                                 <div id="passwordHelp" class="form-text">Must be at least 6 characters long.</div>
                             </div>
-                            <!-- Full Name (Optional) -->
+                            <!-- Full Name -->
                             <div class="mb-3">
                                 <label for="fullName" class="form-label">Full Name</label>
                                 <input type="text" id="fullName" th:field="*{fullName}" class="form-control">
@@ -55,7 +55,6 @@
             </div>
         </div>
     </main>
-     <!-- Optional page specific scripts -->
      <th:block th:fragment="scripts"></th:block>
 </body>
 </html>

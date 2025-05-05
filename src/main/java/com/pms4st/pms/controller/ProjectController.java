@@ -1,8 +1,8 @@
-package com.pms4st.pms.controller; // Ensure this matches your package
+package com.pms4st.pms.controller;
 
 import com.pms4st.pms.entity.*;
 import com.pms4st.pms.exception.ResourceNotFoundException;
-import com.pms4st.pms.service.AppService; // Use combined service
+import com.pms4st.pms.service.AppService; 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class ProjectController {
         return "project-form";
     }
 
-    @GetMapping("/{projectId}") // Renamed path variable for clarity
+    @GetMapping("/{projectId}")
     public String viewProject(@PathVariable Long projectId, Model model, Principal principal, RedirectAttributes ra) {
         if (principal == null) {
             log.warn("Attempt to view project detail without authentication.");
@@ -119,7 +119,7 @@ public class ProjectController {
     }
 
     // --- Project Member Actions ---
-    @PostMapping("/{projectId}/members/add") // Use consistent path variable name
+    @PostMapping("/{projectId}/members/add")
     public String addMember(@PathVariable Long projectId, @RequestParam Long userId, Principal principal, RedirectAttributes ra) {
          if(principal==null) return "redirect:/login";
         try {
@@ -133,7 +133,7 @@ public class ProjectController {
         return "redirect:/projects/" + projectId;
     }
 
-    @PostMapping("/{projectId}/members/remove") // Use consistent path variable name
+    @PostMapping("/{projectId}/members/remove")
     public String removeMember(@PathVariable Long projectId, @RequestParam Long userId, Principal principal, RedirectAttributes ra) {
          if(principal==null) return "redirect:/login";
         try {
@@ -148,7 +148,7 @@ public class ProjectController {
     }
 
     // --- Project Comment Actions ---
-    @PostMapping("/{projectId}/comments") // Use consistent path variable name
+    @PostMapping("/{projectId}/comments")
     public String addProjectComment(@PathVariable Long projectId, @RequestParam String content, Principal principal, RedirectAttributes ra) {
         if(principal==null) return "redirect:/login";
         if(content == null || content.isBlank()){
@@ -156,7 +156,7 @@ public class ProjectController {
              return "redirect:/projects/"+projectId;
         }
         try {
-            appService.addComment(content, projectId, null, principal.getName()); // null taskId for project comment
+            appService.addComment(content, projectId, null, principal.getName()); 
         } catch (Exception e) {
              log.warn("Error adding project comment to project {}: {}", projectId, e.getMessage());
              ra.addFlashAttribute("errorMessage", "Failed to add comment: "+e.getMessage());
@@ -171,7 +171,7 @@ public class ProjectController {
         if(principal==null) return "redirect:/login";
         try {
             Project project = appService.findProjectByIdForUser(projectId, principal.getName());
-            Task task = new Task(); task.setProject(project); // Link project
+            Task task = new Task(); task.setProject(project);
             model.addAttribute("task", task);
             model.addAttribute("projectId", projectId);
             model.addAttribute("members", project.getMembers());
@@ -204,14 +204,14 @@ public class ProjectController {
          if(principal==null) return "redirect:/login";
          // Manual validation
          if(task.getName()==null || task.getName().isBlank()){ result.rejectValue("name", "", "Task name required"); }
-         // Add checks for assignee member validity if needed (complex for basic)
+
 
          if(result.hasErrors()){
               try{ // Repopulate model for form redisplay
                  Project p = appService.findProjectByIdForUser(projectId, principal.getName());
                  model.addAttribute("projectId", projectId);
                  model.addAttribute("members", p.getMembers());
-              } catch(Exception e){ /* redirect if error */ return "redirect:/projects/"+projectId;}
+              } catch(Exception e){ return "redirect:/projects/"+projectId;}
               return "task-form";
          }
 
@@ -236,7 +236,6 @@ public class ProjectController {
     public String deleteTask(@PathVariable Long projectId, @PathVariable Long taskId, Principal principal, RedirectAttributes ra) {
         if(principal==null) return "redirect:/login";
         try {
-            // Verify task belongs to project first (optional)
              Task task = appService.findTaskById(taskId);
              if (!task.getProject().getId().equals(projectId)) throw new AccessDeniedException("Task project mismatch");
             appService.deleteTask(taskId, principal.getName()); // Service checks access
@@ -253,11 +252,10 @@ public class ProjectController {
          if(principal==null) return "redirect:/login";
          if(content == null || content.isBlank()){ ra.addFlashAttribute("errorMessage", "Comment empty."); return "redirect:/projects/"+projectId;}
          try {
-             // Verify task belongs to project (optional)
              Task task = appService.findTaskById(taskId);
              if (!task.getProject().getId().equals(projectId)) throw new AccessDeniedException("Task project mismatch");
 
-             appService.addComment(content, null, taskId, principal.getName()); // null projectId
+             appService.addComment(content, null, taskId, principal.getName()); 
          } catch (Exception e) {
              ra.addFlashAttribute("errorMessage", "Failed to add task comment: "+e.getMessage());
          }

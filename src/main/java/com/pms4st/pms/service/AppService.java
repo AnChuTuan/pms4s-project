@@ -18,16 +18,15 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Service // Mark as Spring service
+@Service
 public class AppService {
 
-    // Inject all repositories needed
     @Autowired private UserRepository userRepository;
     @Autowired private RoleRepository roleRepository;
     @Autowired private ProjectRepository projectRepository;
     @Autowired private TaskRepository taskRepository;
     @Autowired private CommentRepository commentRepository;
-    @Autowired private PasswordEncoder passwordEncoder; // For registration
+    @Autowired private PasswordEncoder passwordEncoder;
 
     // === User Methods ===
 
@@ -38,7 +37,7 @@ public class AppService {
 
         User user = new User();
         user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(rawPassword)); // Hash password
+        user.setPassword(passwordEncoder.encode(rawPassword));
         user.setEmail(email);
         user.setFullName(fullName);
         user.setEnabled(true);
@@ -78,19 +77,18 @@ public class AppService {
             .orElseThrow(() -> new ResourceNotFoundException("Project not found ID: " + projectId));
     }
 
-     // Finds project AND checks if user can access it
      @Transactional(readOnly = true)
     public Project findProjectByIdForUser(Long projectId, String username) {
          Project project = findProjectById(projectId);
-         User user = findUserByUsername(username).orElseThrow(); // User must exist if authenticated
-         checkProjectAccess(project, user); // Use helper below
-         Hibernate.initialize(project.getMembers()); // Force load members
+         User user = findUserByUsername(username).orElseThrow(); 
+         checkProjectAccess(project, user); 
+         Hibernate.initialize(project.getMembers());
          return project;
     }
 
     @Transactional
     public Project saveProject(Project project, String ownerUsername) {
-        User owner = findUserByUsername(ownerUsername).orElseThrow(); // Should exist
+        User owner = findUserByUsername(ownerUsername).orElseThrow(); 
         project.setOwner(owner);
 
         if (project.getId() == null) { // Creating
@@ -100,9 +98,9 @@ public class AppService {
             if (project.getStartDate() == null) project.setStartDate(LocalDate.now());
         } else { // Updating
              Project existing = findProjectById(project.getId());
-             checkProjectAccess(existing, owner); // Verify owner is editing
-             project.setMembers(existing.getMembers()); // Keep existing members
-             project.setOwner(existing.getOwner()); // Owner cannot be changed here
+             checkProjectAccess(existing, owner); 
+             project.setMembers(existing.getMembers()); 
+             project.setOwner(existing.getOwner()); 
         }
         return projectRepository.save(project);
     }
@@ -111,7 +109,7 @@ public class AppService {
     public void deleteProject(Long projectId, String username) {
         Project project = findProjectById(projectId);
         User user = findUserByUsername(username).orElseThrow();
-        if (!project.getOwner().getId().equals(user.getId())) { // Only owner can delete
+        if (!project.getOwner().getId().equals(user.getId())) { 
             throw new AccessDeniedException("Only owner can delete project");
         }
         // Manual cleanup for project-level comments
@@ -123,14 +121,14 @@ public class AppService {
     // === Member Methods ===
      @Transactional
     public void addMemberToProject(Long projectId, Long userIdToAdd, String currentUsername) {
-        Project project = findProjectByIdForUser(projectId, currentUsername); // Checks access
+        Project project = findProjectByIdForUser(projectId, currentUsername); 
         User userToAdd = findUserById(userIdToAdd);
         if (project.getMembers().add(userToAdd)) projectRepository.save(project);
     }
 
     @Transactional
     public void removeMemberFromProject(Long projectId, Long userIdToRemove, String currentUsername) {
-        Project project = findProjectByIdForUser(projectId, currentUsername); // Checks access
+        Project project = findProjectByIdForUser(projectId, currentUsername); 
         User userToRemove = findUserById(userIdToRemove);
         if (project.getOwner().getId().equals(userToRemove.getId())) throw new IllegalArgumentException("Cannot remove owner");
         if (project.getMembers().remove(userToRemove)) projectRepository.save(project);
@@ -161,7 +159,7 @@ public class AppService {
     public Task findTaskByIdForUser(Long taskId, String username) {
         Task task = findTaskById(taskId);
         User user = findUserByUsername(username).orElseThrow();
-        checkProjectAccess(task.getProject(), user); // Check access via project
+        checkProjectAccess(task.getProject(), user); 
         return task;
     }
 
@@ -169,27 +167,24 @@ public class AppService {
     public Task saveTask(Task task, Long projectId, String creatorUsername) {
          Project project = findProjectById(projectId);
          User creator = findUserByUsername(creatorUsername).orElseThrow();
-         checkProjectAccess(project, creator); // Check creator access
+         checkProjectAccess(project, creator); 
 
          task.setProject(project);
          task.setCreatedBy(creator);
 
          // Handle assignee simply
-         User assignee = null; // Declare here
+         User assignee = null; 
          if (task.getAssignee() != null && task.getAssignee().getId() != null) {
-             // Find the potential assignee FIRST
              User potentialAssignee = findUserById(task.getAssignee().getId());
  
-             // Check if assignee is member or owner using the potentialAssignee directly
              boolean isAssigneeMember = project.getMembers().stream()
-                 .anyMatch(m -> m.getId().equals(potentialAssignee.getId())); // Use potentialAssignee here
+                 .anyMatch(m -> m.getId().equals(potentialAssignee.getId())); 
              if (!project.getOwner().getId().equals(potentialAssignee.getId()) && !isAssigneeMember){
                   throw new IllegalArgumentException("Assignee must be a project member or owner.");
              }
-             // If the check passes, assign it
              assignee = potentialAssignee;
          }
-         task.setAssignee(assignee); // Set the final result (either null or the valid user)
+         task.setAssignee(assignee);
 
          if (task.getStatus() == null) task.setStatus("TODO");
          if (task.getPriority() == null) task.setPriority("MEDIUM");
@@ -199,7 +194,7 @@ public class AppService {
 
      @Transactional
     public Task updateTask(Task taskDetails, Long taskId, String username) {
-        Task existingTask = findTaskByIdForUser(taskId, username); // Check access
+        Task existingTask = findTaskByIdForUser(taskId, username);
         Project project = existingTask.getProject();
 
         // Update fields
@@ -210,29 +205,25 @@ public class AppService {
         existingTask.setDeadline(taskDetails.getDeadline());
 
          // Handle assignee update
-         User assignee = null; // Declare here
+         User assignee = null; 
          if (taskDetails.getAssignee() != null && taskDetails.getAssignee().getId() != null) {
-             // Find the potential assignee FIRST
              User potentialAssignee = findUserById(taskDetails.getAssignee().getId());
 
-             // Check if assignee is member using the potentialAssignee directly
-             boolean isAssigneeMember = existingTask.getProject().getMembers().stream() // Use existingTask.getProject()
-                 .anyMatch(m -> m.getId().equals(potentialAssignee.getId())); // Use potentialAssignee here
+             boolean isAssigneeMember = existingTask.getProject().getMembers().stream()
+                 .anyMatch(m -> m.getId().equals(potentialAssignee.getId())); 
              if (!existingTask.getProject().getOwner().getId().equals(potentialAssignee.getId()) && !isAssigneeMember){
                  throw new IllegalArgumentException("Assignee must be a project member or owner.");
              }
-             // If check passes, assign it
              assignee = potentialAssignee;
          }
-        existingTask.setAssignee(assignee); // Set the final result on the existingTask
+        existingTask.setAssignee(assignee); 
 
         return taskRepository.save(existingTask);
     }
 
     @Transactional
     public void deleteTask(Long taskId, String username) {
-        Task task = findTaskByIdForUser(taskId, username); // Check access
-         // Optional: Add finer check (creator/owner?)
+        Task task = findTaskByIdForUser(taskId, username); 
         taskRepository.deleteById(taskId); // DB Cascade handles task comments
     }
 
@@ -255,10 +246,10 @@ public class AppService {
         comment.setUser(user);
 
         if (taskId != null) { // Task comment
-            Task task = findTaskByIdForUser(taskId, username); // Checks access via project
+            Task task = findTaskByIdForUser(taskId, username); 
             comment.setTask(task);
-        } else if (projectId != null) { // Project comment
-            Project project = findProjectByIdForUser(projectId, username); // Checks access
+        } else if (projectId != null) { 
+            Project project = findProjectByIdForUser(projectId, username); 
             comment.setProject(project);
         } else {
             throw new IllegalArgumentException("Comment needs project or task ID.");

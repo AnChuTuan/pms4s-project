@@ -3,7 +3,7 @@ package com.pms4st.pms.controller; // Use your correct base package
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@Controller // Marks this as a controller bean
+@Controller
 public class HomeController {
 
     /**
