@@ -63,20 +63,6 @@ Before you begin, ensure you have the following installed on your system:
     *   Adjust `localhost:1433` if your SQL Server instance is running on a different host or port.
     *   Review `encrypt=true;trustServerCertificate=true;` based on your SQL Server's SSL configuration. For local development, `trustServerCertificate=true` is often used if SSL is enabled but you don't have a trusted certificate.
 
-### File Upload Directory (If File Attachments are Implemented)
-
-*If you have re-added file attachment functionality:*
-
-1.  **Create Directory:** Manually create a directory on your filesystem where uploaded files will be stored.
-2.  **Configure Path:** In `application.properties`, update the `file.upload-dir` property to point to the directory you created:
-    ```properties
-    # File Upload Location (MODIFY THIS if using file uploads)
-    # Example Windows: file.upload-dir=C:/pms-uploads
-    # Example Linux/Mac: file.upload-dir=/var/pms-uploads
-    file.upload-dir=./pms-uploads-basic # Create this directory manually!
-    ```
-    Ensure the application has write permissions to this directory.
-
 ---
 
 ## 3. Building the Project
