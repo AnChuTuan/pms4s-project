@@ -26,7 +26,8 @@ Before you begin, ensure you have the following installed on your system:
 *   **Apache Maven:** Version 3.6.x or later (for building and managing dependencies).
 *   **Microsoft SQL Server:** Any recent version (e.g., Developer Edition, Express Edition).
 *   **SQL Server Management Tool:** Such as SQL Server Management Studio (SSMS) or Azure Data Studio.
-*   **An IDE:** Visual Studio Code with appropriate Java and Spring Boot extensions (Extentions: Spring Web, Spring Data JPA, SQL Server Driver, Spring Security, Thymeleaf)
+*   **An IDE:** Visual Studio Code with appropriate Java and Spring Boot extensions.
+(Extensions: Spring Web, Spring Data JPA, SQL Server Driver, Spring Security, Thymeleaf)
 
 ---
 
@@ -36,20 +37,20 @@ Before you begin, ensure you have the following installed on your system:
 
 1.  **Create Database:**
     *   Using your SQL Server management tool (SSMS or Azure Data Studio), connect to your SQL Server instance.
-    *   Create a new database named `ProjectManagementDB`:
+    *   Open the SQL script `schema.sql` located in `Group 01_Internship 1\schema.sql` to create a new database named `ProjectManagementDB`:
         ```sql
         CREATE DATABASE ProjectManagementDB;
         ```
 2.  **Create Tables:**
-    *   Switch to the newly created database:
+    *   Switch to the next line in the script:
         ```sql
         USE ProjectManagementDB;
         ```
-    *   Execute the SQL script `schema.sql` to create all necessary tables (`users`, `roles`, `projects`, `tasks`, `comments`, etc.) and insert default roles.
+    *   Execute all the scripts left in `schema.sql` to create all necessary tables (`users`, `roles`, `projects`, `tasks`, `comments`, etc.) and insert default roles.
 
 ### Application Properties
 
-1.  Navigate to the `src/main/resources/` directory in the project.
+1.  Navigate to the `project-management-system-for-student-teams/src/main/resources/` directory in the project.
 2.  Open the `application.properties` file.
 3.  **Modify the database connection details** to match your SQL Server setup:
 
@@ -65,7 +66,7 @@ Before you begin, ensure you have the following installed on your system:
 
 ## 3. Building the Project
 
-You can build the project using Apache Maven. Open a terminal or command prompt, navigate to the **root directory** of the project (where the `pom.xml` file is located), and run:
+You can build the project using Apache Maven. Open a terminal or command prompt, navigate to the **root directory** __(project-management-system-for-student-teams)__ of the project (where the `pom.xml` file is located), and run:
 
 ```bash
 mvn clean package
@@ -77,7 +78,7 @@ mvn clean package
 ### Using an IDE (VS Code):
 
 1.  Open the project in VS Code.
-2.  Locate the main application class: `src/main/java/com/pms4st/pms/ProjectManagementSystemForStudentTeamsApplication.java`.
+2.  Locate the main application class: `project-management-system-for-student-teams/src/main/java/com/pms4st/pms/ProjectManagementSystemForStudentTeamsApplication.java`.
 3.  You should see `Run | Debug` links above the `main` method. Click `Run`.
 4.  Alternatively, use the IDE's "Run" or "Debug" configuration for Spring Boot applications.
 
