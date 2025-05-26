@@ -22,7 +22,11 @@
 
 Before you begin, ensure you have the following installed on your system:
 
+<<<<<<< HEAD
 *   **Java Development Kit (JDK):** Version 17.0.2 or later
+=======
+*   **Java Development Kit (JDK):** Version 17.
+>>>>>>> 86dc1b4c19561caa4d2ebf5a91b71672b620c02d
 *   **Apache Maven:** Version 3.6.x or later (for building and managing dependencies).
 *   **Microsoft SQL Server:** Any recent version (e.g., Developer Edition, Express Edition).
 *   **SQL Server Management Tool:** Such as SQL Server Management Studio (SSMS) or Azure Data Studio.
@@ -37,7 +41,11 @@ Before you begin, ensure you have the following installed on your system:
 
 1.  **Create Database:**
     *   Using your SQL Server management tool (SSMS or Azure Data Studio), connect to your SQL Server instance.
+<<<<<<< HEAD
     *   Open the SQL script `schema.sql` located in `01_Code\schema.sql` to create a new database named `ProjectManagementDB`:
+=======
+    *   Open the SQL script `schema.sql` located in `Group 01_Internship 1\schema.sql` to create a new database named `ProjectManagementDB`:
+>>>>>>> 86dc1b4c19561caa4d2ebf5a91b71672b620c02d
         ```sql
         CREATE DATABASE ProjectManagementDB;
         ```
