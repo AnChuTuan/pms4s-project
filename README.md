@@ -22,12 +22,11 @@ PMS4ST is a web-based application designed to help student teams manage their co
 
 Before you begin, ensure you have the following installed on your system:
 
-*   **Java Development Kit (JDK):** Version 17 or later (Project was developed with JDK 17).
+*   **Java Development Kit (JDK):** Version 17.
 *   **Apache Maven:** Version 3.6.x or later (for building and managing dependencies).
 *   **Microsoft SQL Server:** Any recent version (e.g., Developer Edition, Express Edition).
 *   **SQL Server Management Tool:** Such as SQL Server Management Studio (SSMS) or Azure Data Studio.
-*   **Git:** For version control (optional for running, but recommended for development).
-*   **An IDE (Optional but Recommended):** Such as IntelliJ IDEA, Eclipse, or Visual Studio Code with appropriate Java and Spring Boot extensions.
+*   **An IDE:** Visual Studio Code with appropriate Java and Spring Boot extensions.
 
 ---
 
@@ -46,7 +45,7 @@ Before you begin, ensure you have the following installed on your system:
         ```sql
         USE ProjectManagementDB;
         ```
-    *   Execute the SQL script located at `src/main/resources/schema.sql` (or the full schema provided in the project documentation) to create all necessary tables (`users`, `roles`, `projects`, `tasks`, `comments`, etc.) and insert default roles.
+    *   Execute the SQL script `schema.sql` to create all necessary tables (`users`, `roles`, `projects`, `tasks`, `comments`, etc.) and insert default roles.
 
 ### Application Properties
 
@@ -55,13 +54,12 @@ Before you begin, ensure you have the following installed on your system:
 3.  **Modify the database connection details** to match your SQL Server setup:
 
     ```properties
-    # SQL Server Connection (MODIFY THESE)
+    # SQL Server Connection
     spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=ProjectManagementDB;encrypt=true;trustServerCertificate=true;
-    spring.datasource.username=YOUR_DB_USERNAME  # Replace with your SQL Server login username
-    spring.datasource.password=YOUR_DB_PASSWORD  # Replace with your SQL Server login password
+    spring.datasource.username=pms4st
+    spring.datasource.password=pms4st
     ```
     *   Adjust `localhost:1433` if your SQL Server instance is running on a different host or port.
-    *   Review `encrypt=true;trustServerCertificate=true;` based on your SQL Server's SSL configuration. For local development, `trustServerCertificate=true` is often used if SSL is enabled but you don't have a trusted certificate.
 
 ---
 
