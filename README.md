@@ -1,6 +1,8 @@
 # PMS4ST - Project Management System for Student Teams
 
-PMS4ST is a web-based application designed to help student teams manage their collaborative projects effectively. It provides features for project creation, task management, team member collaboration, and commenting.
+## Group 1 - Internship 1 - East Asia University of Technology
+## TOPIC: DESIGN AND IMPLEMENTATION OF A PROJECT MANAGEMENT PLATFORM FOR STUDENT COLLABORATION
+## GITHUB LINK: https://github.com/AnChuTuan/pms4s-project
 
 ## Table of Contents
 1.  [Prerequisites](#prerequisites)
@@ -10,10 +12,9 @@ PMS4ST is a web-based application designed to help student teams manage their co
 3.  [Building the Project](#building-the-project)
 4.  [Running the Application](#running-the-application)
     *   [Using Maven](#using-maven)
-    *   [Using an IDE (e.g., VS Code)](#using-an-ide-eg-vs-code)
+    *   [Using an IDE (VS Code)](#using-an-ide-vs-code)
 5.  [Accessing the Application](#accessing-the-application)
 6.  [Technology Stack](#technology-stack)
-7.  [Project Structure](#project-structure)
 
 ---
 
@@ -25,7 +26,7 @@ Before you begin, ensure you have the following installed on your system:
 *   **Apache Maven:** Version 3.6.x or later (for building and managing dependencies).
 *   **Microsoft SQL Server:** Any recent version (e.g., Developer Edition, Express Edition).
 *   **SQL Server Management Tool:** Such as SQL Server Management Studio (SSMS) or Azure Data Studio.
-*   **An IDE:** Visual Studio Code with appropriate Java and Spring Boot extensions.
+*   **An IDE:** Visual Studio Code with appropriate Java and Spring Boot extensions (Extentions: Spring Web, Spring Data JPA, SQL Server Driver, Spring Security, Thymeleaf)
 
 ---
 
@@ -113,29 +114,5 @@ Once the application is running:
     *   Apache Maven
 *   **Security:**
     *   Spring Security (for authentication and basic authorization)
-
----
-
-## 7. Project Structure (Simplified Overview)
-
-*   **`src/main/java/com/pms4st/pms`**: Base package for Java source code.
-    *   **`.ProjectManagementSystemForStudentTeamsApplication.java`**: The main Spring Boot application class.
-    *   **`.config`**: Configuration classes
-    *   **`.controller`**: Spring MVC controllers handling web requests
-    *   **`.entity`**: JPA entities mapping to database tables
-    *   **`.exception`**: Custom exception classes
-    *   **`.repository`**: Spring Data JPA repository interfaces
-    *   **`.service`**: Service classes containing business logic
-    *   **`.dto`**: (If used) Data Transfer Objects for carrying data, especially for forms.
-*   **`src/main/resources`**:
-    *   **`application.properties`**: Main application configuration file.
-    *   **`schema.sql`**: (If included) SQL script for database schema creation.
-    *   **`static`**: For static resources like CSS, JavaScript, images.
-        *   **`css/style.css`**: Custom stylesheets.
-    *   **`templates`**: Thymeleaf HTML templates.
-        *   **`fragments/layout.html`**: Reusable layout template.
-        *   Other `.html` files for specific views (e.g., `login.html`, `project-list.html`).
-*   **`pom.xml`**: Maven project configuration file (dependencies, build settings).
-*   **`target`**: Directory where Maven places compiled code and packaged JARs.
 
 ---
