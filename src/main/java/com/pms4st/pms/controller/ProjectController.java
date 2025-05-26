@@ -45,28 +45,28 @@ public class ProjectController {
         }
         String username = principal.getName();
         try {
-            // Get project & verify user access (assumes members are EAGER fetched or initialized in service)
+            // Get project & verify user access
             Project project = appService.findProjectByIdForUser(projectId, username);
 
             // Get related data using service methods
             List<Task> tasks = appService.findTasksByProjectId(projectId);
-            List<Comment> projectComments = appService.findCommentsForProject(projectId); // Get project-specific comments
+            List<Comment> projectComments = appService.findCommentsForProject(projectId); 
             List<User> potentialMembers = appService.findPotentialMembers(projectId);
 
             // Add attributes to the model for the Thymeleaf template
             model.addAttribute("project", project);
             model.addAttribute("tasks", tasks);
-            model.addAttribute("projectComments", projectComments); // Use this name in template
-            model.addAttribute("projectMembers", project.getMembers()); // Directly pass the (now EAGER) members set
+            model.addAttribute("projectComments", projectComments);
+            model.addAttribute("projectMembers", project.getMembers()); 
             model.addAttribute("potentialMembers", potentialMembers);
-            model.addAttribute("newComment", new Comment()); // For the comment form
+            model.addAttribute("newComment", new Comment()); 
 
-            return "project-detail"; // Render project-detail.html
+            return "project-detail"; 
 
         } catch (ResourceNotFoundException | AccessDeniedException e) {
             log.warn("Access denied or project not found for ID {} by user {}: {}", projectId, username, e.getMessage());
-            ra.addFlashAttribute("errorMessage", e.getMessage()); // Pass error message
-            return "redirect:/projects"; // Redirect to project list on error
+            ra.addFlashAttribute("errorMessage", e.getMessage()); 
+            return "redirect:/projects"; 
         } catch (Exception e) {
             // Catch unexpected errors
             log.error("Error viewing project ID {} by user {}: {}", projectId, username, e.getMessage(), e); // Log stack trace
@@ -259,6 +259,6 @@ public class ProjectController {
          } catch (Exception e) {
              ra.addFlashAttribute("errorMessage", "Failed to add task comment: "+e.getMessage());
          }
-         return "redirect:/projects/" + projectId; // Back to project detail
+         return "redirect:/projects/" + projectId;
      }
 }

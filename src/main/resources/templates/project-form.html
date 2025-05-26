@@ -19,11 +19,8 @@
             <!-- Project Name -->
             <div class="mb-3">
                 <label for="projectName" class="form-label required">Project Name</label>
-                <!-- th:field connects input to project.name, handles value, id, name -->
                 <input type="text" id="projectName" th:field="*{name}" class="form-control" th:errorclass="is-invalid" required maxlength="100">
-                <!-- Display validation errors for 'name' field -->
                 <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</div>
-                <!-- Basic HTML5 msg for client-side -->
                 <div class="invalid-feedback">Project name is required.</div>
             </div>
 

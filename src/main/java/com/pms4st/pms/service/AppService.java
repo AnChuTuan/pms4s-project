@@ -224,7 +224,7 @@ public class AppService {
     @Transactional
     public void deleteTask(Long taskId, String username) {
         Task task = findTaskByIdForUser(taskId, username); 
-        taskRepository.deleteById(taskId); // DB Cascade handles task comments
+        taskRepository.deleteById(taskId); 
     }
 
     // === Comment Methods ===

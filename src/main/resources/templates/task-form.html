@@ -16,10 +16,10 @@
         <form th:if="${projectId != null}" th:action="@{/projects/{projectId}/tasks/save(projectId=${projectId})}" th:object="${task}" method="post" class="needs-validation" novalidate>
             <div th:unless="${projectId != null}" class="alert alert-danger">Cannot save task: Project ID is missing.</div>
 
-            <!-- Hidden field for task ID (on edit) -->
+
             <input type="hidden" th:field="*{id}" />
-            <!-- Hidden field to pass project ID back -->
-            <!-- Corrected binding for project object -->
+
+
             <input type="hidden" th:field="*{project.id}" name="project" />
 
             <!-- Task Name -->

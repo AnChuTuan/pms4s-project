@@ -35,15 +35,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Loop through each project -->
+
                     <tr th:each="proj : ${projects}">
                         <td>
                             <!-- Link to project detail page -->
                             <a th:href="@{/projects/{id}(id=${proj.id})}" th:text="${proj.name}">Project Name</a>
                         </td>
-                        <!-- Shorten description using Thymeleaf utilities -->
                         <td th:text="${#strings.abbreviate(proj.description, 80)} ?: '-'">Description...</td>
-                        <!-- Safe navigation operator (?.) in case owner is somehow null -->
                         <td th:text="${proj.owner?.username} ?: 'N/A'">Owner</td>
                         <td>
                             <!-- Format dates nicely, handle null dates -->
@@ -62,7 +60,7 @@
                                 <a th:href="@{/projects/{id}/edit(id=${proj.id})}" class="btn btn-sm btn-outline-warning me-1" title="Edit Project">
                                      Edit
                                 </a>
-                                <!-- Delete button within a form to use POST -->
+
                                 <form th:action="@{/projects/{id}/delete(id=${proj.id})}" method="post" class="d-inline" onsubmit="return confirm('Are you SURE you want to delete this project and ALL associated data? This cannot be undone!');">
                                      <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Project">
                                           Delete
@@ -76,7 +74,7 @@
         </div>
     </main>
 
-     <!-- Define page-specific scripts block (can be empty) -->
+     <!-- Define page-specific scripts block -->
      <th:block th:fragment="scripts"></th:block>
 </body>
 </html>
